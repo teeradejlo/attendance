@@ -273,9 +273,11 @@ try:
             else:
                 print("ERROR Incorrect input.\n-------------------------------")
         elif attendanceOrAdmin == "attendance":
+            lcd.write_string("Welcome to \r\nAttendance System!!")
             tableName = "attendance"
             showClasses(mycursor)
             classid = input("Answer: ")
+            lcd.write_string("\r\n\n" + str(classid))
             mycursor.execute("SELECT * FROM classes")
             myresult = mycursor.fetchall()
             if int(classid) <= len(myresult):
