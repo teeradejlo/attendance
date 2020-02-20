@@ -250,7 +250,7 @@ try:
                     print("What do you want to update [classname, teacher]?")
                     topic = input().lower()
                     print("new " + topic + "?")
-                    info = input().lower()
+                    info = input()
                     updateClasses(mycursor, tableName, className, topic, info)
                 else:
                     print("Can't update to attendance table")
