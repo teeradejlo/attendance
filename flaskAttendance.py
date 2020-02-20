@@ -10,6 +10,12 @@ def getClassName(mycursor, classid):
     myresult = mycursor.fetchall()
     return myresult[0][1]
 
+def getClassTeacher(mycursor, classid):
+    mycursor.execute("SELECT * FROM classes WHERE id = \"" + str(classid) + "\"")
+    
+    myresult = mycursor.fetchall()
+    return myresult[0][2]
+
 
 def getStudentName(mycursor, id):
     mycursor.execute("SELECT * FROM students WHERE id = \"" + str(id) + "\"")
@@ -30,12 +36,13 @@ def getAttendanceData(mycursor, tableName):
                          }
                          
                          h1 {
+                             border-top: 20px solid transparent;
                              color: white;
                              text-align: center;
                              font-family: Arial, Heveltica, san-serif;
                          }
                          
-                         table {
+                         table { 
                              width: 80%;
                              color: white;
                              text-align:center;
@@ -57,7 +64,8 @@ def getAttendanceData(mycursor, tableName):
                           <tr>
                             <th width = "20%";>Student ID</th>
                             <th>Student Name</th>
-                            <th>Class Name</th> 
+                            <th>Class Name</th>
+                            <th>Class Teacher</th> 
                             <th>Date and Time</th>
                           </tr>
                     '''
@@ -66,6 +74,7 @@ def getAttendanceData(mycursor, tableName):
         tableString = tableString + '<td>' + myresult[i][0] + '</td>'
         tableString = tableString + '<td>' + getStudentName(mycursor, myresult[i][0]) + '</td>'
         tableString = tableString + '<td>' + getClassName(mycursor, myresult[i][1]) + '</td>'
+        tableString = tableString + '<td>' + getClassTeacher(mycursor, myresult[i][1]) + '</td>'
         tableString = tableString + '<td>' + myresult[i][2] + '</td>' 
         tableString = tableString + '</tr>'
         
