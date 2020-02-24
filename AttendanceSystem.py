@@ -6,6 +6,20 @@ from time import sleep
 from gpiozero import Button
 from datetime import datetime
 
+def getStudentNickName(mycursor, id):
+    mycursor.execute("SELECT * FROM students WHERE id = \"" + str(id) + "\"")
+    
+    myresult = mycursor.fetchall()
+    return myresult[0][3]
+
+
+def getClassName(mycursor, classid):
+    mycursor.execute("SELECT * FROM classes WHERE id = \"" + str(classid) + "\"")
+    
+    myresult = mycursor.fetchall()
+    return myresult[0][1]
+
+
 def createTable(mycursor, tableName):
     if checkTableExistence(mycursor, tableName) == False:
         sql = "CREATE TABLE " + tableName + " (studentid VARCHAR(255) not null, classid VARCHAR(255) not null, datetime VARCHAR(255) not null)"
@@ -273,20 +287,30 @@ try:
             else:
                 print("ERROR Incorrect input.\n-------------------------------")
         elif attendanceOrAdmin == "attendance":
+            lcd.clear()
             lcd.write_string("Welcome to \r\nAttendance System!!")
             tableName = "attendance"
             showClasses(mycursor)
-            classid = input("Answer: ")
+            classid = input("Class ID: ")
             lcd.write_string("\r\n\n" + str(classid))
+            sleep(2)
             mycursor.execute("SELECT * FROM classes")
+            print("")
             myresult = mycursor.fetchall()
             if int(classid) <= len(myresult):
                 checking = True
                 while checking:
-                    print("\nWhat is your student ID? Scan the tag... Press button to EXIT...\n-------------------------------")
+                    lcd.clear()
+                    lcd.write_string(getClassName(mycursor, classid) + "\r\n\nScan the tag..")
+                    print("What is your student ID? Scan the tag... Press button to EXIT...\n-------------------------------")
                     while True:
                         if button.is_pressed:
                             checking = False
+                            print("EXITTING.....\n-------------------------------")
+                            lcd.clear()
+                            lcd.write_string("Exitting....")
+                            sleep(2)
+                            lcd.clear()
                             break
                         elif reader.read_id_no_block():
                             id, name = reader.read()
@@ -295,9 +319,16 @@ try:
                             dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
                             print("Date and Time = " + dt_string)
                             insertAttendance(mycursor, tableName, str(id), classid, dt_string)
+                            dt_string = now.strftime("%d/%m/%Y")
+                            lcd.clear()
+                            lcd.write_string("Welcome!\r\nID: " + str(id) + "\r\nName: " + getStudentNickName(mycursor, id) + "\r\nTime: " + dt_string)
                             sleep(2)
                             break
             else:
+                lcd.clear()
+                lcd.write_string("Class ID ERROR!!")
+                sleep(2)
+                lcd.clear()
                 print("ERROR Incorrect input.\n-------------------------------")
         else:
             print("ERROR Incorrect input.\n-------------------------------")
