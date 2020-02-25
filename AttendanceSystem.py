@@ -318,11 +318,16 @@ try:
                             now = datetime.now()
                             dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
                             print("Date and Time = " + dt_string)
-                            insertAttendance(mycursor, tableName, str(id), classid, dt_string)
-                            dt_string = now.strftime("%d/%m/%Y")
-                            lcd.clear()
-                            lcd.write_string("Welcome!\r\nID: " + str(id) + "\r\nName: " + getStudentNickName(mycursor, id) + "\r\nTime: " + dt_string)
-                            sleep(2)
+                            if findStudentExistence(mycursor, "students", id):
+                                insertAttendance(mycursor, tableName, str(id), classid, dt_string)
+                                dt_string = now.strftime("%d/%m/%Y")
+                                lcd.clear()
+                                lcd.write_string("Welcome!\r\nID: " + str(id) + "\r\nName: " + getStudentNickName(mycursor, id) + "\r\nTime: " + dt_string)
+                                sleep(2)
+                            else:
+                                lcd.clear()
+                                lcd.write_string("No student with\r\nID: " + str(id))
+                                sleep(2)
                             break
             else:
                 lcd.clear()
